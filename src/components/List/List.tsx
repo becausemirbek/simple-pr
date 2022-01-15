@@ -7,19 +7,19 @@ interface TaskListProps {
   tasks: TaskModel[];
 }
 
-const TaskList = ({ tasks }: TaskListProps) => {
-  const [state, setState] = useState<TaskModel[]>(tasks);
+const TaskList = ({ tasks: allTasks }: TaskListProps) => {
+  const [tasks, setTasks] = useState<TaskModel[]>(allTasks);
   const [pending, setPending] = useState<TaskModel[]>([]);
   const [done, setDone] = useState<TaskModel[]>([]);
 
   useEffect(() => {
-    setState(tasks);
-  }, [tasks]);
+    setTasks(allTasks);
+  }, [allTasks]);
 
   useEffect(() => {
-    setPending(state.filter((task: TaskModel) => !task.done));
-    setDone(state.filter((task: TaskModel) => task.done));
-  }, [state]);
+    setPending(tasks.filter((task: TaskModel) => !task.done));
+    setDone(tasks.filter((task: TaskModel) => task.done));
+  }, [tasks]);
 
   function onDragStart(evt: DragEvent<HTMLDivElement>): void {
     let element = evt.currentTarget;
@@ -58,11 +58,11 @@ const TaskList = ({ tasks }: TaskListProps) => {
     evt.preventDefault();
     evt.currentTarget.classList.remove("dragged-over");
     let data = evt.dataTransfer.getData("text/plain");
-    let updated = state.map((task: TaskModel) => {
+    let updated = tasks.map((task: TaskModel) => {
       if (task.id == data) task.done = value;
       return task;
     });
-    setState(updated);
+    setTasks(updated);
   }
   return (
     <div className="task-lists">
